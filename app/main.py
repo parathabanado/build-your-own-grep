@@ -14,8 +14,8 @@ def match_pattern(input_line, pattern):
 def main():
     pattern = sys.argv[2]
     print(sys.argv)
-    print(pattern)
     pattern='o'
+    print(pattern)
     input_line = sys.stdin.read()
     print(input_line)
 
