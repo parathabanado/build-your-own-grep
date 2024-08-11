@@ -13,6 +13,7 @@ def match_pattern(input_line, pattern):
 
 def main():
     pattern = sys.argv[2]
+    print(pattern)
     input_line = sys.stdin.read()
 
     if sys.argv[1] != "-E":
