@@ -13,11 +13,7 @@ def match_pattern(input_line, pattern):
 
 def main():
     pattern = sys.argv[2]
-    print(sys.argv)
-    pattern='o'
-    print(pattern)
     input_line = sys.stdin.read()
-    print(input_line)
 
     if sys.argv[1] != "-E":
         print("Expected first argument to be '-E'")
