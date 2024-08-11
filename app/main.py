@@ -15,6 +15,7 @@ def main():
     pattern = sys.argv[2]
     print(sys.argv)
     print(pattern)
+    pattern='o'
     input_line = sys.stdin.read()
     print(input_line)
 
