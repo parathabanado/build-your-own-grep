@@ -9,7 +9,7 @@ def match_pattern(input_line, pattern):
     if len(pattern) == 1:
         return pattern in input_line
     elif len(pattern) == 2:
-        if pattern=="\d":
+        if pattern=="\\d":
             return len(input_line.translate(str.maketrans('','','0123456789'))) != len(input_line)
 
     else:
