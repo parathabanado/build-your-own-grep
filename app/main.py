@@ -8,16 +8,19 @@ import sys
 def match_pattern(input_line, pattern):
     if len(pattern) == 1:
         return pattern in input_line
-    elif pattern=="\d":
+    elif pattern=="\\d":
         return len(input_line.translate(str.maketrans('','','0123456789'))) != len(input_line)
-    elif pattern=="\w":
+    elif pattern=="\\w":
         return len(input_line.translate(str.maketrans('','','abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))) != len(input_line)
     elif pattern[0]=='[' and pattern[-1]==']':
-        actual_pattern=pattern[1:]
-        for char in actual_pattern:
-            if char in input_line:
-                return True
-        return False
+        actual_pattern=pattern[1:-1]
+        if actual_pattern[0]=='^':
+            return not any(char in actual_pattern for char in input_line)
+        else:
+            for char in actual_pattern:
+                if char in input_line:
+                    return True
+            return False
     else:
         raise RuntimeError(f"Unhandled pattern: {pattern}")
 
