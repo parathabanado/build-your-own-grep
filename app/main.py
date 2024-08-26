@@ -2,27 +2,64 @@ import sys
 
 # import pyparsing - available if you need it!
 # import lark - available if you need it!
-
-
-
-def match_pattern(input_line, pattern):
-    if len(pattern) == 1:
-        return pattern in input_line
-    elif pattern=="\\d":
-        return len(input_line.translate(str.maketrans('','','0123456789'))) != len(input_line)
-    elif pattern=="\\w":
-        return len(input_line.translate(str.maketrans('','','abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'))) != len(input_line)
-    elif pattern[0]=='[' and pattern[-1]==']':
-        actual_pattern=pattern[1:-1]
-        if actual_pattern[0]=='^':
-            return not any(char in actual_pattern for char in input_line)
-        else:
-            for char in actual_pattern:
-                if char in input_line:
-                    return True
-            return False
+def match_character_string(text,pattern):
+    if pattern[0]=='^':
+        return not any(char in pattern for char in text)
     else:
-        raise RuntimeError(f"Unhandled pattern: {pattern}")
+        return any(char in pattern for char in text)
+
+
+def match_pattern(text, pattern):
+    j=-1
+    i=0
+    if pattern[0]=='\\':
+        if pattern[1]=='d':
+            for k in text:
+                if k.isdigit():
+                    j=text.find(k)
+                    i=2
+                    break
+        elif pattern[1]=='w':
+            for k in text:
+                if k.isalnum():
+                    j=text.find(k)
+                    i=2
+                    break
+    else:
+        for k in text:
+            if k==pattern[0]:
+                j=text.find(k)
+                i=1
+    if j==-1:
+        return False  
+    # print(f"First Match at {j} which is {text[j]}")
+    j+=1
+    call_j=j
+    while i<len(pattern) and j<len(text):
+        if pattern[i]=="\\":
+            i+=1
+            if pattern[i]=="d":
+                if text[j].isdigit()==False:
+                    return False
+                else:
+                    j+=1
+            elif pattern[i]=="w":
+                if text[j].isalnum==False:
+                    return False
+                else:
+                    j+=1
+        else:
+            if pattern[i]!=text[j]:
+                return False
+            else:
+                j+=1
+        i+=1
+    if(i<len(pattern) and j>=len(pattern)):
+        return match_pattern(text[call_j::],pattern)
+    return True
+    
+    
+                
 
 
 def main():
@@ -36,10 +73,16 @@ def main():
 
 
     # Uncomment this block to pass the first stage
-    if match_pattern(input_line, pattern):
-        exit(0)
+    if(pattern[0]=='[' and pattern[-1]==']'):
+        if match_character_string(input_line,pattern[1:-1]):
+            exit(0)
+        else:
+            exit(1)
     else:
-        exit(1)
+        if match_pattern(input_line, pattern):
+            exit(0)
+        else:
+            exit(1)
 
 
 if __name__ == "__main__":
