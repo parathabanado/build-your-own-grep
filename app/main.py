@@ -30,6 +30,8 @@ def match_pattern(text, pattern):
                     i=2
         else:
             return True
+    elif pattern[0]=="+":
+        return False
     else:
         for k in text:
             if k==pattern[0]:
@@ -52,10 +54,14 @@ def match_pattern(text, pattern):
                     return False
                 else:
                     j+=1
-        # elif pattern[i]=='^':
-        #     if text[j]!=" ":
-        #         return False
-        #     else:
+        elif pattern[i]=='+':
+            if i-1>=0:
+                while text[j]==pattern[i-1]:
+                    j+=1
+                
+            while text[j]==pattern[i-1]:
+                j+=1
+                count+=1
 
         else:
             if pattern[i]!=text[j]:
