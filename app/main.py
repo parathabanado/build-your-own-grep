@@ -1,7 +1,4 @@
 import sys
-
-# import pyparsing - available if you need it!
-# import lark - available if you need it!
 def match_character_string(text,pattern):
     if pattern[0]=='^':
         return not any(char in pattern for char in text)
@@ -25,6 +22,14 @@ def match_pattern(text, pattern):
                     j=text.find(k)
                     i=2
                     break
+    elif pattern[0]=='^':
+        if len(pattern)>1:
+            for k in range(0,len(text)):
+                if text[k]==pattern[1] and (k==0 or text[k-1]==' '):
+                    j=k
+                    i=2
+        else:
+            return True
     else:
         for k in text:
             if k==pattern[0]:
@@ -32,7 +37,6 @@ def match_pattern(text, pattern):
                 i=1
     if j==-1:
         return False  
-    # print(f"First Match at {j} which is {text[j]}")
     j+=1
     call_j=j
     while i<len(pattern) and j<len(text):
@@ -48,6 +52,11 @@ def match_pattern(text, pattern):
                     return False
                 else:
                     j+=1
+        # elif pattern[i]=='^':
+        #     if text[j]!=" ":
+        #         return False
+        #     else:
+
         else:
             if pattern[i]!=text[j]:
                 return False
@@ -71,8 +80,6 @@ def main():
         print("Expected first argument to be '-E'")
         exit(1)
 
-
-    # Uncomment this block to pass the first stage
     if(pattern[0]=='[' and pattern[-1]==']'):
         if match_character_string(input_line,pattern[1:-1]):
             exit(0)
