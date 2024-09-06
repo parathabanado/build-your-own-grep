@@ -29,17 +29,19 @@ def match_pattern(text, pattern):
                     j=k
                     i=2
         else:
-            return True
+            return [True,j]
     elif pattern[0]=="+":
-        return False
+        return [False,j]
     else:
         for k in text:
             if k==pattern[0]:
                 j=text.find(k)
                 i=1
     if j==-1:
-        return False  
+        return [False,j]  
     j+=1
+    return matchingLoop(text,pattern,i,j)
+def matchingLoop(text,pattern,i,j):
     call_j=j
     check=True
     while i<len(pattern) and j<len(text):
@@ -61,8 +63,42 @@ def match_pattern(text, pattern):
             if i-1>=0:
                 while text[j]==pattern[i-1]:
                     j+=1
-        elif pattern[i]=='|':
-            break
+        elif i+1<len(pattern) and pattern[i+1]=='$':
+            if text[j]==pattern[i] and (j+1>=len(text) or text[j]==" "):
+                j+=1
+            else:
+                check=False
+                break
+        elif pattern[i]=='(':
+            temp=i
+            positionOfORSymbol=i
+            positionOfBracketEnd=i
+            while temp<len(pattern) and pattern[temp]!=')':
+                temp+=1
+                if pattern[temp]=='|':
+                    positionOfORSymbol=temp
+                if pattern[temp]==')':
+                    positionOfBracketEnd=temp
+            if positionOfBracketEnd!=i and positionOfORSymbol!=i:
+                if matchingLoop(text,pattern[i+1:positionOfORSymbol:],0,j)[0]:
+                    check= matchingLoop(text,pattern[i+1:positionOfORSymbol:],0,j)[0]
+                    j=matchingLoop(text,pattern[i+1:positionOfORSymbol:],0,j)[1]
+                    i=positionOfBracketEnd
+                elif matchingLoop(text,pattern[positionOfORSymbol+1:positionOfBracketEnd:],0,j)[0]:
+                    check=matchingLoop(text,pattern[positionOfORSymbol+1:positionOfBracketEnd:],0,j)[0]
+                    j=matchingLoop(text,pattern[positionOfORSymbol+1:positionOfBracketEnd:],0,j)[1]
+                    i=positionOfBracketEnd
+                else:
+                    check=False
+                    i=positionOfBracketEnd+1
+                    break
+
+                    
+
+            else:
+                check=False
+                break
+                
         else:
             if pattern[i]!=text[j] and pattern[i]!='.':
                 if i+1<len(pattern) and pattern[i+1]=='?':
@@ -74,16 +110,12 @@ def match_pattern(text, pattern):
             else:
                 j+=1
         i+=1
-    if j>=len(text) and i<len(pattern):
-        return False
-
+    if j>=len(text) and i<len(pattern) and pattern[-1]!="$":
+        return [False,j]
     if check:
-        return True
+        return [True,j]
     else:
-        if pattern[i]=='|' and i+1<len(pattern):
-            return match_pattern(text,pattern[i+1::])
-        else:
-            return match_pattern(text[call_j::],pattern)
+        return match_pattern(text[call_j::],pattern)
     
     
                 
@@ -104,7 +136,7 @@ def main():
         else:
             exit(1)
     else:
-        if match_pattern(input_line, pattern):
+        if match_pattern(input_line, pattern)[0]:
             exit(0)
         else:
             exit(1)
