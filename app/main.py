@@ -41,37 +41,49 @@ def match_pattern(text, pattern):
         return False  
     j+=1
     call_j=j
+    check=True
     while i<len(pattern) and j<len(text):
         if pattern[i]=="\\":
             i+=1
             if pattern[i]=="d":
                 if text[j].isdigit()==False:
-                    return False
+                    check=False
+                    break
                 else:
                     j+=1
             elif pattern[i]=="w":
                 if text[j].isalnum==False:
-                    return False
+                    check=False
+                    break
                 else:
                     j+=1
         elif pattern[i]=='+' or pattern[i]=='?':
             if i-1>=0:
                 while text[j]==pattern[i-1]:
                     j+=1
-
+        elif pattern[i]=='|':
+            break
         else:
             if pattern[i]!=text[j] and pattern[i]!='.':
                 if i+1<len(pattern) and pattern[i+1]=='?':
                     i+=1
                     continue
                 else:
-                    return False
+                    check=False
+                    break
             else:
                 j+=1
         i+=1
-    if(i<len(pattern) and j>=len(pattern)):
-        return match_pattern(text[call_j::],pattern)
-    return True
+    if j>=len(text) and i<len(pattern):
+        return False
+
+    if check:
+        return True
+    else:
+        if pattern[i]=='|' and i+1<len(pattern):
+            return match_pattern(text,pattern[i+1::])
+        else:
+            return match_pattern(text[call_j::],pattern)
     
     
                 
