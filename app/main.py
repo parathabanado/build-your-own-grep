@@ -54,18 +54,18 @@ def match_pattern(text, pattern):
                     return False
                 else:
                     j+=1
-        elif pattern[i]=='+':
+        elif pattern[i]=='+' or pattern[i]=='?':
             if i-1>=0:
                 while text[j]==pattern[i-1]:
                     j+=1
-                
-            while text[j]==pattern[i-1]:
-                j+=1
-                count+=1
 
         else:
             if pattern[i]!=text[j]:
-                return False
+                if i+1<len(pattern) and pattern[i+1]=='?':
+                    i+=1
+                    continue
+                else:
+                    return False
             else:
                 j+=1
         i+=1
