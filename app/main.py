@@ -60,7 +60,7 @@ def match_pattern(text, pattern):
                     j+=1
 
         else:
-            if pattern[i]!=text[j]:
+            if pattern[i]!=text[j] and pattern[i]!='.':
                 if i+1<len(pattern) and pattern[i+1]=='?':
                     i+=1
                     continue
